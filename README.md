@@ -20,32 +20,41 @@ Cinema booking can become inconvenient when users need to compare movies, check 
 
 ## Key Features
 
-- Browse a catalogue of movies
+- Browse a catalogue of 8 movies spanning genres including Sci-Fi Thriller, Drama, Action Comedy, Animation, Spy Thriller, Romance, Adventure Comedy, and Mystery Drama
 - Search movies by title or genre
-- Filter movies by genre
-- View movie details, including genre, duration, rating, and summary
-- View multiple sessions across today, tomorrow, and future dates
-- Select seats using an interactive seat map
-- Prevent unavailable or already booked seats from being selected
+- Filter movies by broad genre category: All, Action, Animation, Drama, Thriller
+- View movie details including genre, duration, age rating, user rating, and summary
+- View multiple sessions grouped by date (Today, Tomorrow, and future dates), sorted by start time
+- Each session displays available seat count in real time
+- Select seats using an interactive 5-row × 8-column seat map (rows A–E, seats 1–8)
+- Select up to 8 seats per booking
+- Prevent unavailable or already-booked seats from being selected
+- Real-time duplicate booking protection: seats are re-validated at confirmation time
 - Display selected seats and total ticket price before confirmation
-- Confirm a booking and generate a booking reference
-- View confirmed bookings
-- Cancel existing bookings
+- Confirm a booking and generate a unique 8-character booking reference code
+- View a success screen with a "View My Bookings" shortcut after confirming
+- View confirmed bookings split into Upcoming and Past sections
+- Tab bar badge on My Bookings showing the total number of active bookings
+- Cancel existing bookings with a confirmation prompt
 - Persist bookings locally using UserDefaults and Codable
 
 ## iOS Frameworks and Technologies Used
 
 ### SwiftUI
 
-SwiftUI is used to build the user interface, navigation structure, movie list, detail pages, seat selection screen, booking confirmation screen, and booking management page.
+SwiftUI is used to build the entire user interface, including navigation structure, tab bar, movie list, detail pages, seat selection screen, booking confirmation screen, and booking management page.
 
 ### Foundation
 
 Foundation is used for core data types and utilities such as `Date`, `UUID`, `Calendar`, `DateFormatter`, and Codable data handling.
 
+### Combine
+
+Combine is used in `BookingStore` via `ObservableObject` and `@Published` to propagate booking state changes reactively to all views that depend on it.
+
 ### UserDefaults and Codable
 
-UserDefaults and Codable are used to store confirmed bookings locally. This allows bookings to remain available after the app is closed and reopened.
+UserDefaults and Codable are used to store confirmed bookings locally. This allows bookings to remain available after the app is closed and reopened. A custom `init(from:)` decoder ensures older saved bookings remain readable if the data model evolves.
 
 ### SF Symbols
 
@@ -60,21 +69,21 @@ CineBook
 ├── CineBook.xcodeproj
 ├── CineBook
 │   ├── Data
-│   │   ├── MovieCatalog.swift
-│   │   └── SeatMapFactory.swift
+│   │   ├── MovieCatalog.swift       — static movie and session catalogue (8 movies)
+│   │   └── SeatMapFactory.swift     — builds seat grids and sorts seat IDs
 │   │
 │   ├── Models
-│   │   ├── Booking.swift
-│   │   ├── CinemaSession.swift
-│   │   ├── Movie.swift
-│   │   └── Seat.swift
+│   │   ├── Booking.swift            — confirmed booking with reference code helpers
+│   │   ├── CinemaSession.swift      — session time, screen, price, pre-sold seats
+│   │   ├── Movie.swift              — movie data and MovieTheme for poster colours
+│   │   └── Seat.swift               — seat identity and availability status
 │   │
 │   ├── Stores
-│   │   └── BookingStore.swift
+│   │   └── BookingStore.swift       — ObservableObject; add, cancel, persist bookings
 │   │
 │   ├── Views
 │   │   ├── Bookings
-│   │   │   └── MyBookingsView.swift
+│   │   │   └── MyBookingsView.swift — upcoming/past booking list with cancel action
 │   │   │
 │   │   ├── Components
 │   │   │   ├── BookingCardView.swift
@@ -91,8 +100,8 @@ CineBook
 │   │
 │   ├── Assets.xcassets
 │   ├── CineBookApp.swift
-│   └── ContentView.swift
+│   └── ContentView.swift            — TabView with Movies and My Bookings tabs
 │
 ├── .gitignore
 └── README.md
-
+```
