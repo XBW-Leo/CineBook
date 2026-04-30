@@ -51,6 +51,7 @@ struct SeatSelectionView: View {
                 continueButton
             }
             .padding()
+            .padding(.bottom, 32)
         }
         .navigationTitle("Select Seats")
         .navigationBarTitleDisplayMode(.inline)

@@ -11,9 +11,9 @@ struct MovieCardView: View {
     let movie: Movie
 
     var body: some View {
-        HStack(spacing: 15) {
+        HStack(spacing: 0) {
             MoviePosterView(symbol: movie.posterSymbol, theme: movie.theme)
-                .frame(width: 82, height: 112)
+                .frame(width: 68, height: 90)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(movie.title)
@@ -37,6 +37,7 @@ struct MovieCardView: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.blue)
             }
+            .padding(.leading, 16)
 
             Spacer()
 
@@ -46,7 +47,7 @@ struct MovieCardView: View {
         }
         .padding(14)
         .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 22))
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
     }
 }

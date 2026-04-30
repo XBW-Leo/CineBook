@@ -21,20 +21,26 @@ final class BookingStore: ObservableObject {
         bookings = loadBookings()
     }
 
+    @Published var pendingTabSwitch: Int? = nil
+
     var hasBookings: Bool {
         !bookings.isEmpty
     }
 
-    var recentBookings: [Booking] {
-        bookings.sorted { $0.createdAt > $1.createdAt }
+    var upcomingBookings: [Booking] {
+        bookings
+            .filter { $0.sessionTime > Date() }
+            .sorted { $0.sessionTime < $1.sessionTime }
+    }
+
+    var pastBookings: [Booking] {
+        bookings
+            .filter { $0.sessionTime <= Date() }
+            .sorted { $0.sessionTime > $1.sessionTime }
     }
 
     var totalSpent: Double {
         bookings.reduce(0) { $0 + $1.totalPrice }
-    }
-
-    var totalSeatsBooked: Int {
-        bookings.reduce(0) { $0 + $1.seatIDs.count }
     }
 
     func bookedSeatIDs(for session: CinemaSession) -> Set<String> {

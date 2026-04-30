@@ -10,73 +10,117 @@ import SwiftUI
 struct MovieListView: View {
     private let movies = MovieCatalog.movies
 
+    @State private var isSearchActive = false
     @State private var searchText = ""
     @State private var selectedGenre: String?
 
-    private var genres: [String] {
-        Array(Set(movies.map { $0.genre })).sorted()
-    }
+    // Broad genre categories following industry standard (Netflix / Fandango style).
+    // Maps display label → raw genre values in MovieCatalog.
+    private static let genreCategories: [(label: String, matches: [String])] = [
+        ("Action",    ["Action Comedy", "Adventure Comedy"]),
+        ("Animation", ["Animation"]),
+        ("Drama",     ["Drama", "Romance", "Mystery Drama"]),
+        ("Thriller",  ["Sci-Fi Thriller", "Spy Thriller"]),
+    ]
 
-    private var filteredMovies: [Movie] {
-        // Search and genre filters are kept local to this screen.
-        movies.filter { movie in
-            let matchesSearch = searchText.isEmpty ||
-                movie.title.localizedCaseInsensitiveContains(searchText) ||
-                movie.genre.localizedCaseInsensitiveContains(searchText)
-
-            let matchesGenre = selectedGenre == nil || movie.genre == selectedGenre
-
-            return matchesSearch && matchesGenre
+    private var displayedMovies: [Movie] {
+        if isSearchActive {
+            guard !searchText.isEmpty else { return [] }
+            return movies.filter {
+                $0.title.localizedCaseInsensitiveContains(searchText) ||
+                $0.genre.localizedCaseInsensitiveContains(searchText)
+            }
         }
-    }
-
-    private var minimumTicketPrice: Double {
-        movies
-            .flatMap { $0.sessions }
-            .map(\.ticketPrice)
-            .min() ?? 0
+        guard let selectedGenre else { return movies }
+        let matches = Self.genreCategories.first { $0.label == selectedGenre }?.matches ?? [selectedGenre]
+        return movies.filter { matches.contains($0.genre) }
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                headerView
+        VStack(spacing: 0) {
+            if isSearchActive {
+                searchBar
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(Color(.systemBackground))
+            } else {
                 genreFilterView
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(Color(.systemBackground))
+            }
 
-                LazyVStack(spacing: 14) {
-                    ForEach(filteredMovies) { movie in
-                        NavigationLink {
-                            MovieDetailView(movie: movie)
-                        } label: {
-                            MovieCardView(movie: movie)
+            Divider()
+
+            if isSearchActive && searchText.isEmpty {
+                Spacer()
+                VStack(spacing: 12) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 44))
+                        .foregroundStyle(.secondary)
+                    Text("Type to search movies or genres")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 14) {
+                        ForEach(displayedMovies) { movie in
+                            NavigationLink {
+                                MovieDetailView(movie: movie)
+                            } label: {
+                                MovieCardView(movie: movie)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
+                    }
+                    .padding()
+                }
+            }
+        }
+        .navigationTitle("CineBook")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if !isSearchActive {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isSearchActive = true
+                        }
+                    } label: {
+                        Image(systemName: "magnifyingglass")
                     }
                 }
             }
-            .padding()
         }
-        .navigationTitle("CineBook")
-        .searchable(text: $searchText, prompt: "Search movies or genres")
         .background(Color(.systemGroupedBackground))
     }
 
-    private var headerView: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Book your next movie night")
-                .font(.largeTitle.bold())
-
-            Text("Browse films, choose a session across the next few days, select seats, and manage bookings in one simple flow.")
-                .font(.subheadline)
+    private var searchBar: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
-                .lineSpacing(2)
 
-            HStack(spacing: 12) {
-                statPill(title: "\(movies.count)", subtitle: "Movies")
-                statPill(title: "3 Days", subtitle: "Booking Window")
-                statPill(title: String(format: "$%.2f", minimumTicketPrice), subtitle: "From")
+            TextField("Search movies or genres", text: $searchText)
+                .autocorrectionDisabled()
+
+            if !searchText.isEmpty {
+                Button {
+                    searchText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                }
             }
-            .padding(.top, 4)
+
+            Button("Cancel") {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isSearchActive = false
+                    searchText = ""
+                }
+            }
+            .foregroundStyle(.blue)
         }
     }
 
@@ -86,14 +130,12 @@ struct MovieListView: View {
                 filterButton(title: "All", isSelected: selectedGenre == nil) {
                     selectedGenre = nil
                 }
-
-                ForEach(genres, id: \.self) { genre in
-                    filterButton(title: genre, isSelected: selectedGenre == genre) {
-                        selectedGenre = genre
+                ForEach(Self.genreCategories, id: \.label) { category in
+                    filterButton(title: category.label, isSelected: selectedGenre == category.label) {
+                        selectedGenre = category.label
                     }
                 }
             }
-            .padding(.vertical, 2)
         }
     }
 
@@ -112,20 +154,5 @@ struct MovieListView: View {
                 .clipShape(Capsule())
                 .shadow(color: .black.opacity(isSelected ? 0.12 : 0.05), radius: 4, x: 0, y: 2)
         }
-    }
-
-    private func statPill(title: String, subtitle: String) -> some View {
-        VStack(spacing: 2) {
-            Text(title)
-                .font(.headline)
-
-            Text(subtitle)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }

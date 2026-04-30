@@ -13,7 +13,6 @@ struct BookingConfirmationView: View {
     let selectedSeatIDs: [String]
 
     @EnvironmentObject private var bookingStore: BookingStore
-    @Environment(\.dismiss) private var dismiss
 
     @State private var confirmedBooking: Booking?
     @State private var showBookingError = false
@@ -57,7 +56,7 @@ struct BookingConfirmationView: View {
             }
             .padding()
             .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 18))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
 
             Button {
                 confirmBooking()
@@ -95,7 +94,7 @@ struct BookingConfirmationView: View {
         }
         .padding()
         .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
     private func summaryRow(title: String, value: String) -> some View {
@@ -133,7 +132,7 @@ struct BookingConfirmationView: View {
             }
             .padding()
             .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 18))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
 
             Text("You can view or cancel this booking from the My Bookings tab.")
                 .font(.body)
@@ -142,9 +141,9 @@ struct BookingConfirmationView: View {
                 .padding(.horizontal)
 
             Button {
-                dismiss()
+                bookingStore.pendingTabSwitch = 1
             } label: {
-                Text("Done")
+                Text("View My Bookings")
                     .font(.headline)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)

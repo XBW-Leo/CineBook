@@ -9,9 +9,10 @@ import SwiftUI
 
 struct MyBookingsView: View {
     @EnvironmentObject private var bookingStore: BookingStore
+    @Binding var selectedTab: Int
 
     @State private var bookingToCancel: Booking?
-    @State private var showCancelDialog = false
+    @State private var showCancelAlert = false
 
     var body: some View {
         Group {
@@ -23,18 +24,13 @@ struct MyBookingsView: View {
         }
         .navigationTitle("My Bookings")
         .background(Color(.systemGroupedBackground))
-        .confirmationDialog(
-            "Cancel this booking?",
-            isPresented: $showCancelDialog,
-            titleVisibility: .visible
-        ) {
+        .alert("Cancel this booking?", isPresented: $showCancelAlert) {
             Button("Cancel Booking", role: .destructive) {
-                if let bookingToCancel {
-                    bookingStore.cancelBooking(bookingToCancel)
-                    self.bookingToCancel = nil
+                if let booking = bookingToCancel {
+                    bookingStore.cancelBooking(booking)
+                    bookingToCancel = nil
                 }
             }
-
             Button("Keep Booking", role: .cancel) {
                 bookingToCancel = nil
             }
@@ -45,73 +41,45 @@ struct MyBookingsView: View {
 
     private var bookingList: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                summaryHeader
+            VStack(alignment: .leading, spacing: 24) {
+                if !bookingStore.upcomingBookings.isEmpty {
+                    sectionView(
+                        title: "Upcoming",
+                        bookings: bookingStore.upcomingBookings,
+                        isUpcoming: true
+                    )
+                }
 
-                LazyVStack(spacing: 14) {
-                    ForEach(bookingStore.recentBookings) { booking in
-                        BookingCardView(booking: booking) {
-                            bookingToCancel = booking
-                            showCancelDialog = true
-                        }
-                    }
+                if !bookingStore.pastBookings.isEmpty {
+                    sectionView(
+                        title: "Past",
+                        bookings: bookingStore.pastBookings,
+                        isUpcoming: false
+                    )
                 }
             }
             .padding()
         }
     }
 
-    private var summaryHeader: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Upcoming Bookings")
-                .font(.title2.bold())
+    private func sectionView(title: String, bookings: [Booking], isUpcoming: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(title)
+                .font(.title3.bold())
 
-            HStack(spacing: 12) {
-                summaryTile(
-                    title: "\(bookingStore.bookings.count)",
-                    subtitle: "Bookings",
-                    icon: "ticket"
-                )
-
-                summaryTile(
-                    title: "\(bookingStore.totalSeatsBooked)",
-                    subtitle: "Seats",
-                    icon: "chair"
-                )
-
-                summaryTile(
-                    title: String(format: "$%.2f", bookingStore.totalSpent),
-                    subtitle: "Total",
-                    icon: "creditcard"
-                )
+            ForEach(bookings) { booking in
+                BookingCardView(booking: booking, isUpcoming: isUpcoming) {
+                    bookingToCancel = booking
+                    showCancelAlert = true
+                }
             }
         }
     }
 
-    private func summaryTile(title: String, subtitle: String, icon: String) -> some View {
-        VStack(spacing: 6) {
-            Image(systemName: icon)
-                .font(.headline)
-                .foregroundStyle(.blue)
-
-            Text(title)
-                .font(.headline)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-
-            Text(subtitle)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 3)
-    }
-
     private var emptyState: some View {
         VStack(spacing: 18) {
+            Spacer()
+
             Image(systemName: "ticket")
                 .font(.system(size: 58))
                 .foregroundStyle(.blue)
@@ -125,13 +93,19 @@ struct MyBookingsView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
-            Text("Start from the Movies tab")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.blue)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(.blue.opacity(0.10))
-                .clipShape(Capsule())
+            Button {
+                selectedTab = 0
+            } label: {
+                Text("Browse Movies")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 12)
+                    .background(.blue)
+                    .clipShape(Capsule())
+            }
+
+            Spacer()
         }
         .padding()
     }
