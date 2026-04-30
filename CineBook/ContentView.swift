@@ -10,12 +10,14 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject private var bookingStore: BookingStore
     @State private var selectedTab = 0
+    @State private var moviesResetID = UUID()
 
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack {
                 MovieListView()
             }
+            .id(moviesResetID)
             .tabItem {
                 Label("Movies", systemImage: "film")
             }
@@ -31,6 +33,11 @@ struct ContentView: View {
             .tag(1)
         }
         .tint(.blue)
+        .onChange(of: selectedTab) { _, newTab in
+            if newTab == 0 {
+                moviesResetID = UUID()
+            }
+        }
         .onChange(of: bookingStore.pendingTabSwitch) { _, newTab in
             if let tab = newTab {
                 selectedTab = tab

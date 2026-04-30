@@ -14,6 +14,9 @@ struct SeatSelectionView: View {
     @EnvironmentObject private var bookingStore: BookingStore
     @State private var selectedSeatIDs: Set<String> = []
     @State private var showSeatAlert = false
+    @State private var showMaxSeatAlert = false
+
+    private let maxSeats = 8
 
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 8),
@@ -56,6 +59,7 @@ struct SeatSelectionView: View {
         .navigationTitle("Select Seats")
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemGroupedBackground))
+        .toolbar(.hidden, for: .tabBar)
         .onAppear {
             removeUnavailableSelections()
         }
@@ -63,6 +67,11 @@ struct SeatSelectionView: View {
             Button("OK", role: .cancel) { }
         } message: {
             Text("Please choose one or more available seats before continuing.")
+        }
+        .alert("Maximum seats reached", isPresented: $showMaxSeatAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("You can select up to \(maxSeats) seats per booking.")
         }
     }
 
@@ -187,25 +196,29 @@ struct SeatSelectionView: View {
     }
 
     private var continueButton: some View {
-        Group {
-            if selectedSeatIDs.isEmpty {
-                Button {
-                    showSeatAlert = true
-                } label: {
-                    buttonLabel("Continue")
+        HStack {
+            Spacer(minLength: 0)
+            Group {
+                if selectedSeatIDs.isEmpty {
+                    Button {
+                        showSeatAlert = true
+                    } label: {
+                        buttonLabel("Continue")
+                    }
+                } else {
+                    NavigationLink {
+                        BookingConfirmationView(
+                            movie: movie,
+                            session: session,
+                            selectedSeatIDs: orderedSelectedSeatIDs
+                        )
+                    } label: {
+                        buttonLabel("Continue")
+                    }
+                    .buttonStyle(.plain)
                 }
-            } else {
-                NavigationLink {
-                    BookingConfirmationView(
-                        movie: movie,
-                        session: session,
-                        selectedSeatIDs: orderedSelectedSeatIDs
-                    )
-                } label: {
-                    buttonLabel("Continue")
-                }
-                .buttonStyle(.plain)
             }
+            Spacer(minLength: 0)
         }
     }
 
@@ -213,20 +226,22 @@ struct SeatSelectionView: View {
         Text(title)
             .font(.headline)
             .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding()
+            .padding(.vertical, 14)
+            .padding(.horizontal, 48)
             .background(.blue)
             .clipShape(RoundedRectangle(cornerRadius: 15))
     }
 
     private func toggleSeat(_ seat: Seat) {
-        guard seat.status != .unavailable else {
-            return
-        }
+        guard seat.status != .unavailable else { return }
 
         if selectedSeatIDs.contains(seat.id) {
             selectedSeatIDs.remove(seat.id)
         } else {
+            guard selectedSeatIDs.count < maxSeats else {
+                showMaxSeatAlert = true
+                return
+            }
             selectedSeatIDs.insert(seat.id)
         }
     }

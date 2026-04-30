@@ -35,6 +35,7 @@ struct BookingConfirmationView: View {
         .navigationTitle("Confirm Booking")
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemGroupedBackground))
+        .toolbar(.hidden, for: .tabBar)
         .alert("Booking could not be completed", isPresented: $showBookingError) {
             Button("OK", role: .cancel) { }
         } message: {

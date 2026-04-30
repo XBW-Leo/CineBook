@@ -9,6 +9,9 @@ import SwiftUI
 
 struct SessionRowView: View {
     let session: CinemaSession
+    let availableSeats: Int
+
+    private var isSoldOut: Bool { availableSeats == 0 }
 
     private var dayText: String {
         Self.dayFormatter.string(from: session.startsAt).uppercased()
@@ -27,7 +30,7 @@ struct SessionRowView: View {
             VStack(spacing: 4) {
                 Text(dayText)
                     .font(.caption.weight(.bold))
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(isSoldOut ? Color.gray : Color.blue)
 
                 Text(dateText)
                     .font(.caption2)
@@ -41,6 +44,7 @@ struct SessionRowView: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text(timeText)
                     .font(.headline)
+                    .foregroundStyle(isSoldOut ? .secondary : .primary)
 
                 Text(session.screenName)
                     .font(.subheadline)
@@ -52,20 +56,28 @@ struct SessionRowView: View {
             VStack(alignment: .trailing, spacing: 5) {
                 Text(String(format: "$%.2f", session.ticketPrice))
                     .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(isSoldOut ? .secondary : .primary)
 
-                Text("Select seats")
-                    .font(.caption)
-                    .foregroundStyle(.blue)
+                if isSoldOut {
+                    Text("Sold Out")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.red)
+                } else {
+                    Text("\(availableSeats) seats left")
+                        .font(.caption)
+                        .foregroundStyle(availableSeats <= 5 ? .orange : .green)
+                }
             }
 
-            Image(systemName: "chevron.right")
+            Image(systemName: isSoldOut ? "nosign" : "chevron.right")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
         }
         .padding()
         .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 3)
+        .opacity(isSoldOut ? 0.55 : 1.0)
     }
 
     private static let dayFormatter: DateFormatter = {

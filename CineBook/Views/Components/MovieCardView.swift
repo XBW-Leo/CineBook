@@ -14,6 +14,7 @@ struct MovieCardView: View {
         HStack(spacing: 0) {
             MoviePosterView(symbol: movie.posterSymbol, theme: movie.theme)
                 .frame(width: 68, height: 90)
+                .padding(.leading, 6)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(movie.title)
@@ -37,7 +38,7 @@ struct MovieCardView: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.blue)
             }
-            .padding(.leading, 16)
+            .padding(.leading, 26)
 
             Spacer()
 

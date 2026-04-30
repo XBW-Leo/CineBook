@@ -40,9 +40,10 @@ struct BookingCardView: View {
     }
 
     private var headerView: some View {
-        HStack(alignment: .center, spacing: 14) {
+        HStack(alignment: .center, spacing: 0) {
             MoviePosterView(symbol: booking.posterSymbol, theme: booking.movieTheme)
                 .frame(width: 68, height: 90)
+                .padding(.leading, 6)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(booking.movieTitle)
@@ -65,10 +66,11 @@ struct BookingCardView: View {
                     .background(isUpcoming ? .green.opacity(0.12) : Color(.systemGray6))
                     .clipShape(Capsule())
             }
+            .padding(.leading, 26)
 
             Spacer()
         }
-        .padding()
+        .padding(14)
     }
 
     private var qrSection: some View {

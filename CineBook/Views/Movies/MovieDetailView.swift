@@ -10,6 +10,15 @@ import SwiftUI
 struct MovieDetailView: View {
     let movie: Movie
 
+    @EnvironmentObject private var bookingStore: BookingStore
+
+    private let totalSeats = SeatMapFactory.rows.count * SeatMapFactory.seatsPerRow
+
+    private func availableSeats(for session: CinemaSession) -> Int {
+        let taken = session.unavailableSeatIDs.union(bookingStore.bookedSeatIDs(for: session))
+        return max(0, totalSeats - taken.count)
+    }
+
     private var groupedSessions: [(date: Date, sessions: [CinemaSession])] {
         // Grouping sessions by day makes the booking flow easier to scan.
         let calendar = Calendar.current
@@ -96,12 +105,17 @@ struct MovieDetailView: View {
                         .padding(.leading, 2)
 
                     ForEach(group.sessions) { session in
-                        NavigationLink {
-                            SeatSelectionView(movie: movie, session: session)
-                        } label: {
-                            SessionRowView(session: session)
+                        let seats = availableSeats(for: session)
+                        if seats > 0 {
+                            NavigationLink {
+                                SeatSelectionView(movie: movie, session: session)
+                            } label: {
+                                SessionRowView(session: session, availableSeats: seats)
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            SessionRowView(session: session, availableSeats: 0)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
