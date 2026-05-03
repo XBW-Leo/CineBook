@@ -98,3 +98,12 @@ struct SessionRowView: View {
         return formatter
     }()
 }
+
+#Preview {
+    VStack(spacing: 14) {
+        SessionRowView(session: MovieCatalog.movies[0].sessions[0], availableSeats: 24)
+        SessionRowView(session: MovieCatalog.movies[0].sessions[1], availableSeats: 0)
+    }
+    .padding()
+    .background(Color(.systemGroupedBackground))
+}

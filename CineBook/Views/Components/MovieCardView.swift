@@ -52,3 +52,9 @@ struct MovieCardView: View {
         .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
     }
 }
+
+#Preview {
+    MovieCardView(movie: MovieCatalog.movies[0])
+        .padding()
+        .background(Color(.systemGroupedBackground))
+}

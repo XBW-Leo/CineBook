@@ -252,3 +252,13 @@ struct SeatSelectionView: View {
         selectedSeatIDs.subtract(unavailableSeatIDs)
     }
 }
+
+#Preview {
+    NavigationStack {
+        SeatSelectionView(
+            movie: MovieCatalog.movies[0],
+            session: MovieCatalog.movies[0].sessions[0]
+        )
+    }
+    .environmentObject(BookingStore())
+}

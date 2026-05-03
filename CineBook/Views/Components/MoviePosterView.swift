@@ -64,3 +64,9 @@ private extension MovieTheme {
         }
     }
 }
+
+#Preview {
+    MoviePosterView(symbol: "film", theme: .midnight)
+        .frame(width: 160, height: 220)
+        .padding()
+}

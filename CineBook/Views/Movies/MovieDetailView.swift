@@ -151,3 +151,10 @@ struct MovieDetailView: View {
         return formatter
     }()
 }
+
+#Preview {
+    NavigationStack {
+        MovieDetailView(movie: MovieCatalog.movies[0])
+    }
+    .environmentObject(BookingStore())
+}

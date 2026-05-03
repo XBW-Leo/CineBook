@@ -156,3 +156,10 @@ struct MovieListView: View {
         }
     }
 }
+
+#Preview {
+    NavigationStack {
+        MovieListView()
+    }
+    .environmentObject(BookingStore())
+}

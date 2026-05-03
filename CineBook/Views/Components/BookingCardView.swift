@@ -144,3 +144,25 @@ struct BookingCardView: View {
         return UIImage(systemName: "qrcode") ?? UIImage()
     }
 }
+
+#Preview {
+    let movie = MovieCatalog.movies[0]
+    let session = movie.sessions[0]
+    let booking = Booking(
+        id: UUID(),
+        movieID: movie.id,
+        movieTitle: movie.title,
+        posterSymbol: movie.posterSymbol,
+        movieTheme: movie.theme,
+        sessionID: session.id,
+        sessionTime: session.startsAt,
+        screenName: session.screenName,
+        seatIDs: ["A1", "A2", "A3"],
+        ticketPrice: session.ticketPrice,
+        createdAt: Date()
+    )
+
+    BookingCardView(booking: booking, isUpcoming: true) { }
+        .padding()
+        .background(Color(.systemGroupedBackground))
+}

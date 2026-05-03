@@ -110,3 +110,10 @@ struct MyBookingsView: View {
         .padding()
     }
 }
+
+#Preview {
+    NavigationStack {
+        MyBookingsView(selectedTab: .constant(1))
+    }
+    .environmentObject(BookingStore())
+}

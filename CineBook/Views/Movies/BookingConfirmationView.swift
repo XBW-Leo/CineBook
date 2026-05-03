@@ -169,3 +169,14 @@ struct BookingConfirmationView: View {
         }
     }
 }
+
+#Preview {
+    NavigationStack {
+        BookingConfirmationView(
+            movie: MovieCatalog.movies[0],
+            session: MovieCatalog.movies[0].sessions[0],
+            selectedSeatIDs: ["A1", "A2"]
+        )
+    }
+    .environmentObject(BookingStore())
+}

@@ -60,3 +60,12 @@ struct SeatButtonView: View {
         }
     }
 }
+
+#Preview {
+    VStack(spacing: 12) {
+        SeatButtonView(seat: Seat(row: "A", number: 1, status: .available)) { }
+        SeatButtonView(seat: Seat(row: "A", number: 2, status: .selected)) { }
+        SeatButtonView(seat: Seat(row: "A", number: 3, status: .unavailable)) { }
+    }
+    .padding()
+}
