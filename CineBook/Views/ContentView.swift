@@ -29,8 +29,16 @@ struct ContentView: View {
             .tabItem {
                 Label("My Bookings", systemImage: "ticket")
             }
-            .badge(bookingStore.bookings.count)
+            .badge(bookingStore.upcomingBookings.count)
             .tag(1)
+
+            NavigationStack {
+                HistoryView()
+            }
+            .tabItem {
+                Label("History", systemImage: "clock.arrow.circlepath")
+            }
+            .tag(2)
         }
         .tint(.blue)
         .onChange(of: selectedTab) { _, newTab in

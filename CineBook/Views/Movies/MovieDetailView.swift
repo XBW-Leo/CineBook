@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MovieDetailView: View {
     let movie: Movie
+    let selectedDate: Date
 
     @EnvironmentObject private var bookingStore: BookingStore
 
@@ -27,9 +28,12 @@ struct MovieDetailView: View {
         }
 
         return grouped.keys
+            .filter { calendar.isDate($0, inSameDayAs: selectedDate) }
             .sorted()
             .map { date in
-                let sessions = grouped[date]?.sorted { $0.startsAt < $1.startsAt } ?? []
+                let sessions = grouped[date]?
+                    .filter { calendar.isDate($0.startsAt, inSameDayAs: selectedDate) }
+                    .sorted { $0.startsAt < $1.startsAt } ?? []
                 return (date, sessions)
             }
     }
@@ -154,7 +158,7 @@ struct MovieDetailView: View {
 
 #Preview {
     NavigationStack {
-        MovieDetailView(movie: MovieCatalog.movies[0])
+        MovieDetailView(movie: MovieCatalog.movies[0], selectedDate: Date())
     }
     .environmentObject(BookingStore())
 }

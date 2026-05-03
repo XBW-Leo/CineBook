@@ -28,14 +28,16 @@ final class BookingStore: ObservableObject {
     }
 
     var upcomingBookings: [Booking] {
-        bookings
-            .filter { $0.sessionTime > Date() }
+        let now = Date()
+        return bookings
+            .filter { isActiveOrUpcoming($0, now: now) }
             .sorted { $0.sessionTime < $1.sessionTime }
     }
 
     var pastBookings: [Booking] {
-        bookings
-            .filter { $0.sessionTime <= Date() }
+        let now = Date()
+        return bookings
+            .filter { !isActiveOrUpcoming($0, now: now) }
             .sorted { $0.sessionTime > $1.sessionTime }
     }
 
@@ -95,6 +97,16 @@ final class BookingStore: ObservableObject {
 
     func cancelBooking(_ booking: Booking) {
         bookings.removeAll { $0.id == booking.id }
+    }
+
+    func clearHistoryBookings() {
+        let now = Date()
+        bookings = bookings.filter { isActiveOrUpcoming($0, now: now) }
+    }
+
+    private func isActiveOrUpcoming(_ booking: Booking, now: Date) -> Bool {
+        let sessionEndsAt = booking.sessionTime.addingTimeInterval(2 * 60 * 60)
+        return sessionEndsAt >= now
     }
 
     private func saveBookings() {

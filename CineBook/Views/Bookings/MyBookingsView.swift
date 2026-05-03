@@ -16,7 +16,7 @@ struct MyBookingsView: View {
 
     var body: some View {
         Group {
-            if bookingStore.hasBookings {
+            if !bookingStore.upcomingBookings.isEmpty {
                 bookingList
             } else {
                 emptyState
@@ -42,21 +42,11 @@ struct MyBookingsView: View {
     private var bookingList: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                if !bookingStore.upcomingBookings.isEmpty {
-                    sectionView(
-                        title: "Upcoming",
-                        bookings: bookingStore.upcomingBookings,
-                        isUpcoming: true
-                    )
-                }
-
-                if !bookingStore.pastBookings.isEmpty {
-                    sectionView(
-                        title: "Past",
-                        bookings: bookingStore.pastBookings,
-                        isUpcoming: false
-                    )
-                }
+                sectionView(
+                    title: "Upcoming",
+                    bookings: bookingStore.upcomingBookings,
+                    isUpcoming: true
+                )
             }
             .padding()
         }
