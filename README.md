@@ -1,9 +1,16 @@
-# 42889 iOS Application Development Assignment3 - CineBook
+# 42889 iOS Application Development – Assessment Task 3
 
-Group members:
-25605344 - Xuebin Wu
-25546235 - Lin Du
- - Xinyu Zhou
+## CineBook
+
+**CineBook** is a SwiftUI-based iOS cinema booking application developed as a minimum viable product for the iOS Application Development group project. The app allows users to browse movies, choose sessions across multiple dates, select seats, confirm bookings, view booking history, and cancel upcoming bookings.
+
+## Group Members
+
+| Student ID | Name |
+|---|---|
+| 25605344 | Xuebin Wu |
+| 25546235 | Lin Du |
+| [Student ID] | Xinyu Zhou |
 
 CineBook is a SwiftUI-based iOS cinema booking application developed as a minimum viable product for the iOS Application Development group assignment. The app allows users to browse movies, choose sessions across multiple dates, select seats, confirm bookings, view booking history, and cancel upcoming bookings.
 
