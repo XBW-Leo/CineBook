@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MovieDetailView: View {
     let movie: Movie
-    let selectedDate: Date
+    let selectedDate: Date?
 
     @EnvironmentObject private var bookingStore: BookingStore
 
@@ -28,11 +28,23 @@ struct MovieDetailView: View {
         }
 
         return grouped.keys
-            .filter { calendar.isDate($0, inSameDayAs: selectedDate) }
+            .filter { date in
+                if let selectedDate {
+                    return calendar.isDate(date, inSameDayAs: selectedDate)
+                }
+
+                return isWithinDateOptions(date)
+            }
             .sorted()
             .map { date in
                 let sessions = grouped[date]?
-                    .filter { calendar.isDate($0.startsAt, inSameDayAs: selectedDate) }
+                    .filter { session in
+                        if let selectedDate {
+                            return calendar.isDate(session.startsAt, inSameDayAs: selectedDate)
+                        }
+
+                        return isWithinDateOptions(session.startsAt)
+                    }
                     .sorted { $0.startsAt < $1.startsAt } ?? []
                 return (date, sessions)
             }
@@ -149,6 +161,17 @@ struct MovieDetailView: View {
         return Self.dateSectionFormatter.string(from: date)
     }
 
+    private func isWithinDateOptions(_ date: Date) -> Bool {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+
+        guard let endDate = calendar.date(byAdding: .day, value: 7, to: today) else {
+            return false
+        }
+
+        return date >= today && date < endDate
+    }
+
     private static let dateSectionFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, d MMM"
@@ -158,7 +181,7 @@ struct MovieDetailView: View {
 
 #Preview {
     NavigationStack {
-        MovieDetailView(movie: MovieCatalog.movies[0], selectedDate: Date())
+        MovieDetailView(movie: MovieCatalog.movies[0], selectedDate: nil)
     }
     .environmentObject(BookingStore())
 }
