@@ -1,48 +1,57 @@
-# CineBook
+# 42889 iOS Application Development Assignment3 - CineBook
 
-CineBook is a SwiftUI-based iOS cinema booking application developed as a minimum viable product for the iOS Application Development group assignment. The app allows users to browse movies, view available sessions across multiple days, select seats, confirm bookings, and manage or cancel existing bookings.
+Group members:
+25605344 - Xuebin Wu
+25546235 - Lin Du
+ - Xinyu Zhou
+
+CineBook is a SwiftUI-based iOS cinema booking application developed as a minimum viable product for the iOS Application Development group assignment. The app allows users to browse movies, choose sessions across multiple dates, select seats, confirm bookings, view booking history, and cancel upcoming bookings.
 
 ## Project Overview
 
-CineBook focuses on simplifying the cinema booking experience for mobile users. Instead of requiring users to move through a complex booking process, the app provides a clear flow from movie discovery to seat selection and booking management.
+CineBook focuses on simplifying the cinema booking experience for mobile users. Instead of requiring users to move through a complicated website or visit a cinema counter, the app provides a clear native iOS flow from movie discovery to seat selection and booking management.
 
-The main booking flow is:
+The main user flow is:
 
-Movies → Movie Detail → Session Selection → Seat Selection → Booking Confirmation → My Bookings
+Movies → Movie Detail → Session Selection → Seat Selection → Booking Confirmation → My Bookings → History
 
 ## Target Audience
 
-The target audience is university students and young adults who regularly watch movies with friends and prefer a fast, mobile-first way to book cinema seats. These users value clear session information, simple seat selection, and the ability to manage bookings without needing to visit a cinema counter or use a complicated website.
+The target audience is university students and young adults aged 18–35 who regularly watch movies with friends and prefer a fast, mobile-first booking experience. These users value clear session information, simple seat selection, visible seat availability, and the ability to manage bookings without needing to call the cinema or use a cluttered website.
 
 ## Problem Statement
 
-Cinema booking can become inconvenient when users need to compare movies, check available sessions, select seats, and manage reservations through separate or cluttered interfaces. CineBook addresses this problem by combining these steps into one simple iOS app with a focused and easy-to-follow booking process.
+Cinema booking can be inconvenient when users need to compare movies, check sessions across dates, select seats, manage reservations, and cancel bookings through separate or poorly optimised interfaces. CineBook addresses this problem by combining these steps into one focused iOS app with a simple booking flow and clear seat availability feedback.
 
 ## Key Features
 
-- Browse a catalogue of 8 movies spanning genres including Sci-Fi Thriller, Drama, Action Comedy, Animation, Spy Thriller, Romance, Adventure Comedy, and Mystery Drama
+- Browse a catalogue of 8 movies across multiple genres
+- Select sessions across a 7-day booking window
 - Search movies by title or genre
-- Filter movies by broad genre category: All, Action, Animation, Drama, Thriller
+- Filter movies by broad genre category: All, Action, Animation, Drama, and Thriller
 - View movie details including genre, duration, age rating, user rating, and summary
-- View multiple sessions grouped by date (Today, Tomorrow, and future dates), sorted by start time
-- Each session displays available seat count in real time
-- Select seats using an interactive 5-row × 8-column seat map (rows A–E, seats 1–8)
-- Select up to 8 seats per booking
+- View available sessions sorted by date and time
+- Display real-time available seat count for each session
+- Show sold-out sessions clearly when no seats are available
+- Select seats using an interactive 5-row × 8-column seat map
+- Limit each booking to a maximum of 8 seats
 - Prevent unavailable or already-booked seats from being selected
-- Real-time duplicate booking protection: seats are re-validated at confirmation time
+- Recheck seat availability before confirmation to prevent duplicate bookings
 - Display selected seats and total ticket price before confirmation
-- Confirm a booking and generate a unique 8-character booking reference code
-- View a success screen with a "View My Bookings" shortcut after confirming
-- View confirmed bookings split into Upcoming and Past sections
-- Tab bar badge on My Bookings showing the total number of active bookings
-- Cancel existing bookings with a confirmation prompt
+- Confirm a booking and generate an 8-character booking reference code
+- Generate a QR code for each confirmed booking
+- View upcoming bookings in the My Bookings tab
+- Display a tab badge showing the number of upcoming bookings
+- Cancel upcoming bookings with a confirmation alert
+- Move expired bookings into the History tab
+- Clear past booking history without affecting upcoming bookings
 - Persist bookings locally using UserDefaults and Codable
 
 ## iOS Frameworks and Technologies Used
 
 ### SwiftUI
 
-SwiftUI is used to build the entire user interface, including navigation structure, tab bar, movie list, detail pages, seat selection screen, booking confirmation screen, and booking management page.
+SwiftUI is used to build the main user interface, including the tab bar, navigation stacks, movie list, movie detail page, seat selection screen, booking confirmation screen, My Bookings page, and History page.
 
 ### Foundation
 
@@ -50,15 +59,19 @@ Foundation is used for core data types and utilities such as `Date`, `UUID`, `Ca
 
 ### Combine
 
-Combine is used in `BookingStore` via `ObservableObject` and `@Published` to propagate booking state changes reactively to all views that depend on it.
+Combine is used through `ObservableObject` and `@Published` in `BookingStore`, allowing booking state changes to update related views automatically.
 
 ### UserDefaults and Codable
 
-UserDefaults and Codable are used to store confirmed bookings locally. This allows bookings to remain available after the app is closed and reopened. A custom `init(from:)` decoder ensures older saved bookings remain readable if the data model evolves.
+UserDefaults and Codable are used to store confirmed bookings locally. This allows bookings to remain available after the app is closed and reopened.
+
+### CoreImage
+
+CoreImage is used to generate QR codes for confirmed bookings based on the booking reference code.
 
 ### SF Symbols
 
-SF Symbols are used throughout the app to provide consistent system icons for movies, tickets, seats, ratings, dates, and actions.
+SF Symbols are used throughout the interface to provide consistent system icons for movies, tickets, seats, ratings, dates, search, history, and booking actions.
 
 ## Code Structure
 
@@ -68,22 +81,24 @@ The project is organised into clear functional sections. The main app code is lo
 CineBook
 ├── CineBook.xcodeproj
 ├── CineBook
-│   ├── Data
-│   │   ├── MovieCatalog.swift       — static movie and session catalogue (8 movies)
-│   │   └── SeatMapFactory.swift     — builds seat grids and sorts seat IDs
+│   ├── App
+│   │   └── CineBookApp.swift
 │   │
 │   ├── Models
-│   │   ├── Booking.swift            — confirmed booking with reference code helpers
-│   │   ├── CinemaSession.swift      — session time, screen, price, pre-sold seats
-│   │   ├── Movie.swift              — movie data and MovieTheme for poster colours
-│   │   └── Seat.swift               — seat identity and availability status
+│   │   ├── Booking.swift
+│   │   ├── CinemaSession.swift
+│   │   ├── Movie.swift
+│   │   ├── MovieCatalog.swift
+│   │   ├── Seat.swift
+│   │   └── SeatMapFactory.swift
 │   │
-│   ├── Stores
-│   │   └── BookingStore.swift       — ObservableObject; add, cancel, persist bookings
+│   ├── ViewModels
+│   │   └── BookingStore.swift
 │   │
 │   ├── Views
 │   │   ├── Bookings
-│   │   │   └── MyBookingsView.swift — upcoming/past booking list with cancel action
+│   │   │   ├── HistoryView.swift
+│   │   │   └── MyBookingsView.swift
 │   │   │
 │   │   ├── Components
 │   │   │   ├── BookingCardView.swift
@@ -92,16 +107,84 @@ CineBook
 │   │   │   ├── SeatButtonView.swift
 │   │   │   └── SessionRowView.swift
 │   │   │
-│   │   └── Movies
-│   │       ├── BookingConfirmationView.swift
-│   │       ├── MovieDetailView.swift
-│   │       ├── MovieListView.swift
-│   │       └── SeatSelectionView.swift
+│   │   ├── Movies
+│   │   │   ├── BookingConfirmationView.swift
+│   │   │   ├── MovieDetailView.swift
+│   │   │   ├── MovieListView.swift
+│   │   │   └── SeatSelectionView.swift
+│   │   │
+│   │   └── ContentView.swift
 │   │
-│   ├── Assets.xcassets
-│   ├── CineBookApp.swift
-│   └── ContentView.swift            — TabView with Movies and My Bookings tabs
+│   └── Assets.xcassets
 │
 ├── .gitignore
 └── README.md
 ```
+
+## Code Design
+
+### Data Modelling
+
+The app uses separate data models for `Movie`, `CinemaSession`, `Seat`, and `Booking`. These models reflect the main entities in a cinema booking system and keep the app logic easier to understand and maintain.
+
+### Immutable Data and Safer State
+
+Most domain data is represented using Swift `struct` types and `let` constants. Seat availability is controlled through the `SeatStatus` enum, which helps prevent invalid seat states from being created accidentally.
+
+### Functional Separation
+
+The project separates app entry setup, data models, sample catalogue data, booking state management, and reusable SwiftUI components. For example, movie and session content is stored in `MovieCatalog`, seat grid generation is handled by `SeatMapFactory`, and booking persistence is managed by `BookingStore`.
+
+### Loose Coupling
+
+Views do not directly manage persistent storage. Booking-related logic is handled by `BookingStore`, while UI screens focus on presentation and user interaction. This makes each part easier to modify without affecting unrelated files.
+
+### Extensibility
+
+New movies, sessions, prices, screens, unavailable seats, and movie themes can be added mainly by updating the model and catalogue data. The main UI does not need to be rewritten when new movie content is added.
+
+### Error Handling and User Guidance
+
+The app prevents invalid booking actions by:
+
+- Disabling unavailable seats
+- Preventing users from continuing without selecting a seat
+- Limiting each booking to 8 seats
+- Showing an alert when the maximum seat limit is reached
+- Rechecking seat availability at confirmation time
+- Marking sold-out sessions clearly
+- Asking for confirmation before cancelling a booking
+- Keeping upcoming and past bookings separated
+
+## How to Run the Project
+
+1. Open `CineBook.xcodeproj` in Xcode.
+2. Select an iOS Simulator.
+3. Build and run the project using `Command + R`.
+4. Use the Movies tab to browse films, select a date, choose a session, and make a booking.
+5. Use the My Bookings tab to view or cancel upcoming bookings.
+6. Use the History tab to view expired bookings.
+
+## GitHub Repository
+
+GitHub Repository Link:
+
+https://github.com/XBW-Leo/CineBook
+
+## Minimum Viable Product and Iterative Design
+
+CineBook was developed as an MVP through an iterative product design process.
+
+The first version focused on the core booking flow: displaying movies, choosing a session, selecting seats, and confirming a booking. Later iterations added local persistence, cancellation, improved seat availability handling, a larger movie catalogue, date-based session browsing, search, genre filtering, QR code generation, booking history, and a more polished user interface.
+
+This iterative process helped keep the app focused on the core user problem while gradually improving usability and code quality.
+
+## Greatest Development Challenge
+
+The greatest challenge was managing seat availability consistently across the booking process. A seat could be unavailable from the sample cinema data, selected by the current user, or already booked in a previous confirmed booking.
+
+To solve this, the project uses `SeatStatus` to represent seat state, `SeatMapFactory` to generate the seat grid, and `BookingStore` to recheck availability before confirming a booking. This prevents duplicate bookings and guides users toward valid actions.
+
+## Current Limitations
+
+CineBook is an MVP and uses local sample data rather than a live cinema database. Payment processing, user login, real cinema APIs, online accounts, and cloud synchronisation are outside the current project scope but could be added in future versions.
