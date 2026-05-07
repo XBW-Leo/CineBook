@@ -15,11 +15,13 @@ struct MovieDetailView: View {
 
     private let totalSeats = SeatMapFactory.rows.count * SeatMapFactory.seatsPerRow
 
+    // Counts seats that can still be booked.
     private func availableSeats(for session: CinemaSession) -> Int {
         let taken = session.unavailableSeatIDs.union(bookingStore.bookedSeatIDs(for: session))
         return max(0, totalSeats - taken.count)
     }
 
+    // Groups and filters sessions for display.
     private var groupedSessions: [(date: Date, sessions: [CinemaSession])] {
         // Grouping sessions by day makes the booking flow easier to scan.
         let calendar = Calendar.current
@@ -50,6 +52,7 @@ struct MovieDetailView: View {
             }
     }
 
+    // Shows movie details and available sessions.
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
@@ -65,6 +68,7 @@ struct MovieDetailView: View {
         .background(Color(.systemGroupedBackground))
     }
 
+    // Shows the large movie poster header.
     private var posterView: some View {
         ZStack(alignment: .bottomLeading) {
             MoviePosterView(symbol: movie.posterSymbol, theme: movie.theme, cornerRadius: 28)
@@ -83,6 +87,7 @@ struct MovieDetailView: View {
         }
     }
 
+    // Shows movie duration, rating, and score.
     private var movieInfoView: some View {
         HStack(spacing: 10) {
             infoPill(icon: "clock", text: movie.durationText)
@@ -93,6 +98,7 @@ struct MovieDetailView: View {
         }
     }
 
+    // Shows the movie summary.
     private var overviewView: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Overview")
@@ -108,6 +114,7 @@ struct MovieDetailView: View {
         .clipShape(RoundedRectangle(cornerRadius: 18))
     }
 
+    // Shows sessions grouped by date.
     private var sessionSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Available Sessions")
@@ -138,6 +145,7 @@ struct MovieDetailView: View {
         }
     }
 
+    // Builds a small movie info label.
     private func infoPill(icon: String, text: String) -> some View {
         Label(text, systemImage: icon)
             .font(.caption.weight(.semibold))
@@ -147,6 +155,7 @@ struct MovieDetailView: View {
             .clipShape(Capsule())
     }
 
+    // Formats the session section date title.
     private func sectionTitle(for date: Date) -> String {
         let calendar = Calendar.current
 
@@ -161,6 +170,7 @@ struct MovieDetailView: View {
         return Self.dateSectionFormatter.string(from: date)
     }
 
+    // Checks if a date is within the seven-day booking window.
     private func isWithinDateOptions(_ date: Date) -> Bool {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -172,6 +182,7 @@ struct MovieDetailView: View {
         return date >= today && date < endDate
     }
 
+    // Formats non-today session section titles.
     private static let dateSectionFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, d MMM"

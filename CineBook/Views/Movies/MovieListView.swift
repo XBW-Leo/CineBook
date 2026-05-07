@@ -10,6 +10,7 @@ import SwiftUI
 struct MovieListView: View {
     @StateObject private var viewModel = MovieListViewModel()
 
+    // Shows the movie browser screen.
     var body: some View {
         VStack(spacing: 0) {
             dateSelectorView
@@ -76,6 +77,7 @@ struct MovieListView: View {
         .background(Color(.systemGroupedBackground))
     }
 
+    // Shows the horizontal date filter.
     private var dateSelectorView: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
@@ -88,6 +90,7 @@ struct MovieListView: View {
         }
     }
 
+    // Shows the search field and cancel button.
     private var searchBar: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
@@ -114,6 +117,7 @@ struct MovieListView: View {
         }
     }
 
+    // Shows the horizontal genre filter.
     private var genreFilterView: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
@@ -129,6 +133,7 @@ struct MovieListView: View {
         }
     }
 
+    // Selects all dates in the booking window.
     private var allDatesButton: some View {
         let isSelected = viewModel.selectedDate == nil
 
@@ -146,6 +151,7 @@ struct MovieListView: View {
         }
     }
 
+    // Builds one date filter button.
     private func dateButton(for date: Date) -> some View {
         let isSelected = viewModel.selectedDate.map {
             Calendar.current.isDate(date, inSameDayAs: $0)
@@ -165,6 +171,7 @@ struct MovieListView: View {
         }
     }
 
+    // Formats the date label for the filter.
     private func dateButtonTitle(for date: Date) -> String {
         let calendar = Calendar.current
 
@@ -179,6 +186,7 @@ struct MovieListView: View {
         return Self.shortDateFormatter.string(from: date)
     }
 
+    // Builds one genre filter button.
     private func filterButton(
         title: String,
         isSelected: Bool,
@@ -196,6 +204,7 @@ struct MovieListView: View {
             }
     }
 
+    // Formats later dates in a short style.
     private static let shortDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE d"

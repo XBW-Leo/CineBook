@@ -12,6 +12,7 @@ struct MoviePosterView: View {
     let theme: MovieTheme
     var cornerRadius: CGFloat = 18
 
+    // Shows the styled movie poster.
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: cornerRadius)
@@ -43,6 +44,7 @@ struct MoviePosterView: View {
 }
 
 private extension MovieTheme {
+    // Provides gradient colors for each movie theme.
     var colors: [Color] {
         switch self {
         case .midnight:

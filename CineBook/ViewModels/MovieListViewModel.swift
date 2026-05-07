@@ -29,6 +29,7 @@ final class MovieListViewModel: ObservableObject {
         self.movies = movies
     }
 
+    // Builds the next seven date options.
     var dateOptions: [Date] {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -38,6 +39,7 @@ final class MovieListViewModel: ObservableObject {
         }
     }
 
+    // Shows movies after applying date, search, and genre filters.
     var displayedMovies: [Movie] {
         let calendar = Calendar.current
 
@@ -73,10 +75,12 @@ final class MovieListViewModel: ObservableObject {
         }
     }
 
+    // Opens the search mode.
     func activateSearch() {
         isSearchActive = true
     }
 
+    // Closes search mode and clears the search text.
     func cancelSearch() {
         isSearchActive = false
         searchText = ""

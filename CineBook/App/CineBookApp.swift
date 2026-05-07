@@ -11,6 +11,7 @@ import SwiftUI
 struct CineBookApp: App {
     @StateObject private var bookingStore = BookingStore()
 
+    // Creates the main app window.
     var body: some Scene {
         WindowGroup {
             ContentView()

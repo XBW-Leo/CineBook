@@ -11,6 +11,7 @@ struct SeatButtonView: View {
     let seat: Seat
     let action: () -> Void
 
+    // Shows one seat button.
     var body: some View {
         Button(action: action) {
             Text(seat.label)
@@ -31,6 +32,7 @@ struct SeatButtonView: View {
         .accessibilityLabel("Seat \(seat.label)")
     }
 
+    // Chooses the seat background color.
     private var backgroundColor: Color {
         switch seat.status {
         case .available:
@@ -42,6 +44,7 @@ struct SeatButtonView: View {
         }
     }
 
+    // Chooses the seat border color.
     private var borderColor: Color {
         switch seat.status {
         case .selected:
@@ -51,6 +54,7 @@ struct SeatButtonView: View {
         }
     }
 
+    // Chooses the seat text color.
     private var textColor: Color {
         switch seat.status {
         case .available, .selected:

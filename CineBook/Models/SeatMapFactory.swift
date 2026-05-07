@@ -10,9 +10,12 @@ import Foundation
 // Converts simple seat IDs into the seat objects used by the UI.
 // Keeping this outside the view makes the seating layout easier to change later.
 enum SeatMapFactory {
+    // Defines the seat row labels.
     static let rows = ["A", "B", "C", "D", "E"]
+    // Defines how many seats each row has.
     static let seatsPerRow = 8
 
+    // Creates seat objects with their current status.
     static func makeSeats(
         unavailableSeatIDs: Set<String>,
         selectedSeatIDs: Set<String>
@@ -35,6 +38,7 @@ enum SeatMapFactory {
         }
     }
 
+    // Sorts seat IDs by row and number.
     static func sortedSeatIDs(_ seatIDs: [String]) -> [String] {
         seatIDs.sorted { left, right in
             let leftKey = seatSortKey(left)
@@ -48,6 +52,7 @@ enum SeatMapFactory {
         }
     }
 
+    // Splits a seat ID into row and number for sorting.
     private static func seatSortKey(_ seatID: String) -> (row: String, number: Int) {
         let row = String(seatID.prefix(1))
         let number = Int(seatID.dropFirst()) ?? 0

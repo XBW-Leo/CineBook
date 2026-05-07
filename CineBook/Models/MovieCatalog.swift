@@ -190,6 +190,7 @@ enum MovieCatalog {
     ]
 
     // A small helper keeps the catalogue readable while still producing real Date values.
+    // Creates a cinema session from relative day and time values.
     private static func session(
         _ id: String,
         _ daysFromToday: Int,
@@ -208,6 +209,7 @@ enum MovieCatalog {
         )
     }
 
+    // Builds a Date by adding days to today and setting the time.
     private static func sessionDate(daysFromToday: Int, hour: Int, minute: Int) -> Date {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())

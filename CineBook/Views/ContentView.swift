@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var selectedTab = 0
     @State private var moviesResetID = UUID()
 
+    // Shows the main tab navigation.
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack {
@@ -41,11 +42,13 @@ struct ContentView: View {
             .tag(2)
         }
         .tint(.blue)
+        // Resets the movie navigation when the Movies tab is selected.
         .onChange(of: selectedTab) { _, newTab in
             if newTab == 0 {
                 moviesResetID = UUID()
             }
         }
+        // Handles tab switch requests from child views.
         .onChange(of: bookingStore.pendingTabSwitch) { _, newTab in
             if let tab = newTab {
                 selectedTab = tab

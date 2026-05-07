@@ -20,18 +20,22 @@ struct Booking: Identifiable, Codable, Hashable {
     let ticketPrice: Double
     let createdAt: Date
 
+    // Calculates the total price for all selected seats.
     var totalPrice: Double {
         Double(seatIDs.count) * ticketPrice
     }
 
+    // Shows a short reference code for the booking.
     var referenceCode: String {
         String(id.uuidString.prefix(8)).uppercased()
     }
 
+    // Formats the session time for display.
     var sessionTimeText: String {
         Self.sessionFormatter.string(from: sessionTime)
     }
 
+    // Joins all booked seats into one readable string.
     var seatText: String {
         seatIDs.joined(separator: ", ")
     }
@@ -94,6 +98,7 @@ struct Booking: Identifiable, Codable, Hashable {
         createdAt = try container.decode(Date.self, forKey: .createdAt)
     }
 
+    // Formats booking session dates.
     private static let sessionFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, d MMM · h:mm a"

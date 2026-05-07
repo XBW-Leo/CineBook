@@ -10,6 +10,7 @@ import SwiftUI
 struct MovieCardView: View {
     let movie: Movie
 
+    // Shows one movie in the list.
     var body: some View {
         HStack(spacing: 0) {
             MoviePosterView(symbol: movie.posterSymbol, theme: movie.theme)

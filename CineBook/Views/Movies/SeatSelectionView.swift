@@ -23,11 +23,13 @@ struct SeatSelectionView: View {
         count: SeatMapFactory.seatsPerRow
     )
 
+    // Combines sold seats and already booked seats.
     private var unavailableSeatIDs: Set<String> {
         // Combine seats sold in the sample data with seats booked during app use.
         session.unavailableSeatIDs.union(bookingStore.bookedSeatIDs(for: session))
     }
 
+    // Builds the seats shown in the grid.
     private var seats: [Seat] {
         SeatMapFactory.makeSeats(
             unavailableSeatIDs: unavailableSeatIDs,
@@ -35,14 +37,17 @@ struct SeatSelectionView: View {
         )
     }
 
+    // Sorts selected seats for display and booking.
     private var orderedSelectedSeatIDs: [String] {
         SeatMapFactory.sortedSeatIDs(Array(selectedSeatIDs))
     }
 
+    // Calculates the total price for selected seats.
     private var totalPrice: Double {
         Double(selectedSeatIDs.count) * session.ticketPrice
     }
 
+    // Shows the seat selection screen.
     var body: some View {
         ScrollView {
             VStack(spacing: 22) {
@@ -75,6 +80,7 @@ struct SeatSelectionView: View {
         }
     }
 
+    // Shows the selected movie and session summary.
     private var headerCard: some View {
         HStack(spacing: 14) {
             MoviePosterView(symbol: movie.posterSymbol, theme: movie.theme)
@@ -101,6 +107,7 @@ struct SeatSelectionView: View {
         .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
     }
 
+    // Shows the cinema screen indicator.
     private var screenView: some View {
         VStack(spacing: 8) {
             RoundedRectangle(cornerRadius: 8)
@@ -121,6 +128,7 @@ struct SeatSelectionView: View {
         .padding(.top, 4)
     }
 
+    // Shows the seat grid.
     private var seatGridCard: some View {
         LazyVGrid(columns: columns, spacing: 10) {
             ForEach(seats) { seat in
@@ -135,6 +143,7 @@ struct SeatSelectionView: View {
         .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
     }
 
+    // Shows the meaning of seat colors.
     private var legendView: some View {
         HStack(spacing: 16) {
             legendItem(color: .green, text: "Available")
@@ -145,6 +154,7 @@ struct SeatSelectionView: View {
         .foregroundStyle(.secondary)
     }
 
+    // Builds one legend item.
     private func legendItem(color: Color, text: String) -> some View {
         HStack(spacing: 6) {
             Circle()
@@ -155,6 +165,7 @@ struct SeatSelectionView: View {
         }
     }
 
+    // Shows selected seats and price summary.
     private var summaryView: some View {
         VStack(spacing: 11) {
             HStack {
@@ -195,6 +206,7 @@ struct SeatSelectionView: View {
         .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
     }
 
+    // Shows the continue action for booking.
     private var continueButton: some View {
         HStack {
             Spacer(minLength: 0)
@@ -222,6 +234,7 @@ struct SeatSelectionView: View {
         }
     }
 
+    // Builds the main button style.
     private func buttonLabel(_ title: String) -> some View {
         Text(title)
             .font(.headline)
@@ -232,6 +245,7 @@ struct SeatSelectionView: View {
             .clipShape(RoundedRectangle(cornerRadius: 15))
     }
 
+    // Selects or deselects an available seat.
     private func toggleSeat(_ seat: Seat) {
         guard seat.status != .unavailable else { return }
 

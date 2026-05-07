@@ -11,20 +11,25 @@ struct SessionRowView: View {
     let session: CinemaSession
     let availableSeats: Int
 
+    // Checks if no seats are left.
     private var isSoldOut: Bool { availableSeats == 0 }
 
+    // Formats the weekday label.
     private var dayText: String {
         Self.dayFormatter.string(from: session.startsAt).uppercased()
     }
 
+    // Formats the date label.
     private var dateText: String {
         Self.dateFormatter.string(from: session.startsAt)
     }
 
+    // Formats the time label.
     private var timeText: String {
         Self.timeFormatter.string(from: session.startsAt)
     }
 
+    // Shows one cinema session row.
     var body: some View {
         HStack(spacing: 14) {
             VStack(spacing: 4) {
@@ -80,18 +85,21 @@ struct SessionRowView: View {
         .opacity(isSoldOut ? 0.55 : 1.0)
     }
 
+    // Formats weekday text.
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
         return formatter
     }()
 
+    // Formats short date text.
     private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM"
         return formatter
     }()
 
+    // Formats session time text.
     private static let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"

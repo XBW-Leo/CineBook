@@ -11,6 +11,7 @@ struct HistoryView: View {
     @EnvironmentObject private var bookingStore: BookingStore
     @State private var showClearHistoryAlert = false
 
+    // Shows expired bookings.
     var body: some View {
         Group {
             if bookingStore.pastBookings.isEmpty {
@@ -40,6 +41,7 @@ struct HistoryView: View {
         }
     }
 
+    // Shows the list of expired bookings.
     private var historyList: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
@@ -51,6 +53,7 @@ struct HistoryView: View {
         }
     }
 
+    // Shows a message when there is no booking history.
     private var emptyState: some View {
         VStack(spacing: 18) {
             Spacer()

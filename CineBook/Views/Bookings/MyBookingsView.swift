@@ -14,6 +14,7 @@ struct MyBookingsView: View {
     @State private var bookingToCancel: Booking?
     @State private var showCancelAlert = false
 
+    // Shows active and upcoming bookings.
     var body: some View {
         Group {
             if !bookingStore.upcomingBookings.isEmpty {
@@ -39,6 +40,7 @@ struct MyBookingsView: View {
         }
     }
 
+    // Shows the list of current bookings.
     private var bookingList: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
@@ -52,6 +54,7 @@ struct MyBookingsView: View {
         }
     }
 
+    // Builds one booking section.
     private func sectionView(title: String, bookings: [Booking], isUpcoming: Bool) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(title)
@@ -66,6 +69,7 @@ struct MyBookingsView: View {
         }
     }
 
+    // Shows a message when there are no current bookings.
     private var emptyState: some View {
         VStack(spacing: 18) {
             Spacer()

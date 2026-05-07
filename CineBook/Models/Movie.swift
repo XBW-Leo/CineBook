@@ -32,6 +32,7 @@ struct Movie: Identifiable, Codable, Hashable {
     let theme: MovieTheme
     let sessions: [CinemaSession]
 
+    // Shows the movie duration as display text.
     var durationText: String {
         "\(durationMinutes) min"
     }

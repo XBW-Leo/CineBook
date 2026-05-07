@@ -13,6 +13,7 @@ struct BookingCardView: View {
     let isUpcoming: Bool
     let onCancel: () -> Void
 
+    // Shortens long seat lists for display.
     private var truncatedSeatText: String {
         let seats = booking.seatIDs
         if seats.count <= 6 {
@@ -22,6 +23,7 @@ struct BookingCardView: View {
         return "\(preview) (+\(seats.count - 3) more)"
     }
 
+    // Shows one booking card.
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             headerView
@@ -39,6 +41,7 @@ struct BookingCardView: View {
         .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
     }
 
+    // Shows the movie and booking status.
     private var headerView: some View {
         HStack(alignment: .center, spacing: 0) {
             MoviePosterView(symbol: booking.posterSymbol, theme: booking.movieTheme)
@@ -73,6 +76,7 @@ struct BookingCardView: View {
         .padding(14)
     }
 
+    // Shows the QR code and reference code.
     private var qrSection: some View {
         HStack(spacing: 16) {
             Image(uiImage: generateQRCode(from: booking.referenceCode))
@@ -100,6 +104,7 @@ struct BookingCardView: View {
         .padding()
     }
 
+    // Shows booking details.
     private var detailSection: some View {
         VStack(spacing: 10) {
             detailRow(title: "Screen", value: booking.screenName)
@@ -109,6 +114,7 @@ struct BookingCardView: View {
         .padding()
     }
 
+    // Shows the cancel action for upcoming bookings.
     private var cancelButton: some View {
         Button(role: .destructive) {
             onCancel()
@@ -121,6 +127,7 @@ struct BookingCardView: View {
         .padding()
     }
 
+    // Builds one booking detail row.
     private func detailRow(title: String, value: String) -> some View {
         HStack(alignment: .top) {
             Text(title)
@@ -133,6 +140,7 @@ struct BookingCardView: View {
         .font(.subheadline)
     }
 
+    // Generates a QR code image from text.
     private func generateQRCode(from string: String) -> UIImage {
         let context = CIContext()
         let filter = CIFilter.qrCodeGenerator()

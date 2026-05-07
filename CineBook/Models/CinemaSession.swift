@@ -17,10 +17,12 @@ struct CinemaSession: Identifiable, Codable, Hashable {
     // User-created bookings are added separately by BookingStore.
     let unavailableSeatIDs: Set<String>
 
+    // Formats the session start time for display.
     var startTimeText: String {
         Self.displayFormatter.string(from: startsAt)
     }
 
+    // Formats cinema session dates.
     private static let displayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, d MMM · h:mm a"

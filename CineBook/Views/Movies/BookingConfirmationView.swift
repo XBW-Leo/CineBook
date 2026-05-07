@@ -17,10 +17,12 @@ struct BookingConfirmationView: View {
     @State private var confirmedBooking: Booking?
     @State private var showBookingError = false
 
+    // Calculates the total booking price.
     private var totalPrice: Double {
         Double(selectedSeatIDs.count) * session.ticketPrice
     }
 
+    // Shows the booking confirmation screen.
     var body: some View {
         ScrollView {
             VStack(spacing: 22) {
@@ -43,6 +45,7 @@ struct BookingConfirmationView: View {
         }
     }
 
+    // Shows booking details before confirmation.
     private var confirmationSummary: some View {
         VStack(alignment: .leading, spacing: 18) {
             posterHeader
@@ -74,6 +77,7 @@ struct BookingConfirmationView: View {
         }
     }
 
+    // Shows movie information at the top.
     private var posterHeader: some View {
         HStack(spacing: 14) {
             MoviePosterView(symbol: movie.posterSymbol, theme: movie.theme)
@@ -98,6 +102,7 @@ struct BookingConfirmationView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
+    // Builds one row in the booking summary.
     private func summaryRow(title: String, value: String) -> some View {
         HStack(alignment: .top) {
             Text(title)
@@ -112,6 +117,7 @@ struct BookingConfirmationView: View {
         .font(.subheadline)
     }
 
+    // Shows the successful booking state.
     private func successView(for booking: Booking) -> some View {
         VStack(spacing: 18) {
             Image(systemName: "checkmark.circle.fill")
@@ -155,6 +161,7 @@ struct BookingConfirmationView: View {
         }
     }
 
+    // Creates the booking through the booking store.
     private func confirmBooking() {
         let booking = bookingStore.addBooking(
             movie: movie,

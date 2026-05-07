@@ -19,10 +19,12 @@ struct Seat: Identifiable, Codable, Hashable {
     let number: Int
     let status: SeatStatus
 
+    // Builds the seat ID from its row and number.
     var id: String {
         "\(row)\(number)"
     }
 
+    // Shows the seat label in the UI.
     var label: String {
         id
     }
