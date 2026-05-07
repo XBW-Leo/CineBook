@@ -18,6 +18,8 @@ CineBook is a SwiftUI-based iOS cinema booking application developed as a minimu
 
 CineBook focuses on simplifying the cinema booking experience for mobile users. Instead of requiring users to move through a complicated website or visit a cinema counter, the app provides a clear native iOS flow from movie discovery to seat selection and booking management.
 
+Compared with booking at a cinema counter or using a complex website, CineBook gives users one simple mobile flow for browsing movies, choosing seats, and managing bookings.
+
 The main user flow is:
 
 Movies → Movie Detail → Session Selection → Seat Selection → Booking Confirmation → My Bookings → History
@@ -33,7 +35,7 @@ Cinema booking can be inconvenient when users need to compare movies, check sess
 ## Key Features
 
 - Browse a catalogue of 8 movies across multiple genres
-- Select sessions across a 7-day booking window
+- Select all dates or one date across a 7-day booking window
 - Search movies by title or genre
 - Filter movies by broad genre category: All, Action, Animation, Drama, and Thriller
 - View movie details including genre, duration, age rating, user rating, and summary
@@ -51,7 +53,7 @@ Cinema booking can be inconvenient when users need to compare movies, check sess
 - Display a tab badge showing the number of upcoming bookings
 - Cancel upcoming bookings with a confirmation alert
 - Move expired bookings into the History tab
-- Clear past booking history without affecting upcoming bookings
+- Clear past booking history with a confirmation alert and without affecting upcoming bookings
 - Persist bookings locally using UserDefaults and Codable
 
 ## iOS Frameworks and Technologies Used
@@ -100,7 +102,8 @@ CineBook
 │   │   └── SeatMapFactory.swift
 │   │
 │   ├── ViewModels
-│   │   └── BookingStore.swift
+│   │   ├── BookingStore.swift
+│   │   └── MovieListViewModel.swift
 │   │
 │   ├── Views
 │   │   ├── Bookings
@@ -140,15 +143,17 @@ Most domain data is represented using Swift `struct` types and `let` constants. 
 
 ### Functional Separation
 
-The project separates app entry setup, data models, sample catalogue data, booking state management, and reusable SwiftUI components. For example, movie and session content is stored in `MovieCatalog`, seat grid generation is handled by `SeatMapFactory`, and booking persistence is managed by `BookingStore`.
+The project separates app entry setup, data models, sample catalogue data, booking state management, movie list filtering, and reusable SwiftUI components. For example, movie and session content is stored in `MovieCatalog`, seat grid generation is handled by `SeatMapFactory`, movie list search/date/genre filtering is handled by `MovieListViewModel`, and booking persistence is managed by `BookingStore`.
 
 ### Loose Coupling
 
-Views do not directly manage persistent storage. Booking-related logic is handled by `BookingStore`, while UI screens focus on presentation and user interaction. This makes each part easier to modify without affecting unrelated files.
+Views do not directly manage persistent storage. Booking-related logic is handled by `BookingStore`, movie list filtering is handled by `MovieListViewModel`, while UI screens focus on presentation and user interaction. This makes each part easier to modify without affecting unrelated files.
 
 ### Extensibility
 
 New movies, sessions, prices, screens, unavailable seats, and movie themes can be added mainly by updating the model and catalogue data. The main UI does not need to be rewritten when new movie content is added.
+
+The current catalogue uses relative session dates, so sessions can stay within the next 7 days without using fixed calendar dates.
 
 ### Error Handling and User Guidance
 
@@ -161,7 +166,8 @@ The app prevents invalid booking actions by:
 - Rechecking seat availability at confirmation time
 - Marking sold-out sessions clearly
 - Asking for confirmation before cancelling a booking
-- Keeping upcoming and past bookings separated
+- Asking for confirmation before clearing booking history
+- Keeping active/upcoming and past bookings separated
 
 ## How to Run the Project
 
