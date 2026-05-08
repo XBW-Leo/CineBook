@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MovieListView: View {
     @StateObject private var viewModel = MovieListViewModel()
+    private let sessionRefreshTimer = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     // Shows the movie browser screen.
     var body: some View {
@@ -73,6 +74,9 @@ struct MovieListView: View {
                     }
                 }
             }
+        }
+        .onReceive(sessionRefreshTimer) { now in
+            viewModel.refreshCurrentTime(now)
         }
         .background(Color(.systemGroupedBackground))
     }

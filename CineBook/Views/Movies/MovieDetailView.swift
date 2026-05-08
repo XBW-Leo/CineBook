@@ -12,8 +12,10 @@ struct MovieDetailView: View {
     let selectedDate: Date?
 
     @EnvironmentObject private var bookingStore: BookingStore
+    @State private var currentTime = Date()
 
     private let totalSeats = SeatMapFactory.rows.count * SeatMapFactory.seatsPerRow
+    private let sessionRefreshTimer = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     // Counts seats that can still be booked.
     private func availableSeats(for session: CinemaSession) -> Int {
@@ -25,6 +27,7 @@ struct MovieDetailView: View {
     private var groupedSessions: [(date: Date, sessions: [CinemaSession])] {
         // Grouping sessions by day makes the booking flow easier to scan.
         let calendar = Calendar.current
+        let now = currentTime
         let grouped = Dictionary(grouping: movie.sessions) { session in
             calendar.startOfDay(for: session.startsAt)
         }
@@ -38,9 +41,13 @@ struct MovieDetailView: View {
                 return isWithinDateOptions(date)
             }
             .sorted()
-            .map { date in
+            .compactMap { date in
                 let sessions = grouped[date]?
                     .filter { session in
+                        guard session.isBookable(relativeTo: now) else {
+                            return false
+                        }
+
                         if let selectedDate {
                             return calendar.isDate(session.startsAt, inSameDayAs: selectedDate)
                         }
@@ -48,6 +55,11 @@ struct MovieDetailView: View {
                         return isWithinDateOptions(session.startsAt)
                     }
                     .sorted { $0.startsAt < $1.startsAt } ?? []
+
+                guard !sessions.isEmpty else {
+                    return nil
+                }
+
                 return (date, sessions)
             }
     }
@@ -66,6 +78,9 @@ struct MovieDetailView: View {
         .navigationTitle(movie.title)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemGroupedBackground))
+        .onReceive(sessionRefreshTimer) { now in
+            currentTime = now
+        }
     }
 
     // Shows the large movie poster header.
@@ -120,24 +135,34 @@ struct MovieDetailView: View {
             Text("Available Sessions")
                 .font(.headline)
 
-            ForEach(groupedSessions, id: \.date) { group in
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(sectionTitle(for: group.date))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .padding(.leading, 2)
+            if groupedSessions.isEmpty {
+                Text("No upcoming sessions are available for this date.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+            } else {
+                ForEach(groupedSessions, id: \.date) { group in
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(sectionTitle(for: group.date))
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .padding(.leading, 2)
 
-                    ForEach(group.sessions) { session in
-                        let seats = availableSeats(for: session)
-                        if seats > 0 {
-                            NavigationLink {
-                                SeatSelectionView(movie: movie, session: session)
-                            } label: {
-                                SessionRowView(session: session, availableSeats: seats)
+                        ForEach(group.sessions) { session in
+                            let seats = availableSeats(for: session)
+                            if seats > 0 {
+                                NavigationLink {
+                                    SeatSelectionView(movie: movie, session: session)
+                                } label: {
+                                    SessionRowView(session: session, availableSeats: seats)
+                                }
+                                .buttonStyle(.plain)
+                            } else {
+                                SessionRowView(session: session, availableSeats: 0)
                             }
-                            .buttonStyle(.plain)
-                        } else {
-                            SessionRowView(session: session, availableSeats: 0)
                         }
                     }
                 }

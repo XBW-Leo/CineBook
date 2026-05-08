@@ -22,6 +22,11 @@ struct CinemaSession: Identifiable, Codable, Hashable {
         Self.displayFormatter.string(from: startsAt)
     }
 
+    // A session can only be booked before its start time.
+    func isBookable(relativeTo now: Date = Date()) -> Bool {
+        startsAt > now
+    }
+
     // Formats cinema session dates.
     private static let displayFormatter: DateFormatter = {
         let formatter = DateFormatter()

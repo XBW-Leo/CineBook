@@ -70,6 +70,10 @@ final class BookingStore: ObservableObject {
         session: CinemaSession,
         selectedSeatIDs: [String]
     ) -> Booking? {
+        guard session.isBookable() else {
+            return nil
+        }
+
         let orderedSeats = SeatMapFactory.sortedSeatIDs(Array(Set(selectedSeatIDs)))
 
         guard !orderedSeats.isEmpty else {

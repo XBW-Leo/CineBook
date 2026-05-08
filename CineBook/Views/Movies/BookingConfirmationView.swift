@@ -41,7 +41,7 @@ struct BookingConfirmationView: View {
         .alert("Booking could not be completed", isPresented: $showBookingError) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text("One or more selected seats may no longer be available. Please go back and choose again.")
+            Text("The session may have already started, or one or more selected seats may no longer be available. Please go back and choose again.")
         }
     }
 

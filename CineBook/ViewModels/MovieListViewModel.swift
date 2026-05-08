@@ -13,6 +13,7 @@ final class MovieListViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var selectedGenre: String?
     @Published var selectedDate: Date?
+    @Published private var currentTime = Date()
 
     let movies: [Movie]
 
@@ -42,9 +43,14 @@ final class MovieListViewModel: ObservableObject {
     // Shows movies after applying date, search, and genre filters.
     var displayedMovies: [Movie] {
         let calendar = Calendar.current
+        let now = currentTime
 
         return movies.filter { movie in
             let hasMatchingSessionDate = movie.sessions.contains { session in
+                guard session.isBookable(relativeTo: now) else {
+                    return false
+                }
+
                 if let selectedDate {
                     return calendar.isDate(session.startsAt, inSameDayAs: selectedDate)
                 }
@@ -84,5 +90,10 @@ final class MovieListViewModel: ObservableObject {
     func cancelSearch() {
         isSearchActive = false
         searchText = ""
+    }
+
+    // Refreshes time-based session availability.
+    func refreshCurrentTime(_ now: Date = Date()) {
+        currentTime = now
     }
 }
