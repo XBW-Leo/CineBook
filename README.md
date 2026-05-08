@@ -12,8 +12,6 @@
 | 25605344 | Xuebin Wu |
 | 25942689 | Xinyu Zhou |
 
-CineBook is a SwiftUI-based iOS cinema booking application developed as a minimum viable product for the iOS Application Development group assignment. The app allows users to browse movies, choose sessions across multiple dates, select seats, confirm bookings, view booking history, and cancel upcoming bookings.
-
 ## Project Overview
 
 CineBook focuses on simplifying the cinema booking experience for mobile users. Instead of requiring users to move through a complicated website or visit a cinema counter, the app provides a clear native iOS flow from movie discovery to seat selection and booking management.
@@ -40,6 +38,7 @@ Cinema booking can be inconvenient when users need to compare movies, check sess
 - Filter movies by broad genre category: All, Action, Animation, Drama, and Thriller
 - View movie details including genre, duration, age rating, user rating, and summary
 - View available sessions sorted by date and time
+- Hide expired sessions automatically and prevent bookings after a session has started
 - Display real-time available seat count for each session
 - Show sold-out sessions clearly when no seats are available
 - Select seats using an interactive 5-row × 8-column seat map
@@ -164,6 +163,8 @@ The app prevents invalid booking actions by:
 - Limiting each booking to 8 seats
 - Showing an alert when the maximum seat limit is reached
 - Rechecking seat availability at confirmation time
+- Hiding sessions that have already started
+- Preventing users from confirming bookings for expired sessions
 - Marking sold-out sessions clearly
 - Asking for confirmation before cancelling a booking
 - Asking for confirmation before clearing booking history
