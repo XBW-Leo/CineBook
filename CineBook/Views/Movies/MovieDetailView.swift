@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct MovieDetailView: View {
     let movie: Movie

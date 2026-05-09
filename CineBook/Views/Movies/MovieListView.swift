@@ -2,10 +2,11 @@
 //  MovieListView.swift
 //  CineBook
 //
-//  Created by Xuebin Wu on 2026/4/26.
+//  Created by Xinyu Zhou on 2026/4/26.
 //
 
 import SwiftUI
+import Combine
 
 struct MovieListView: View {
     @StateObject private var viewModel = MovieListViewModel()

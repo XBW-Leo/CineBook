@@ -2,7 +2,7 @@
 //  BookingConfirmationView.swift
 //  CineBook
 //
-//  Created by Xuebin Wu on 2026/4/27.
+//  Created by Lin Du on 2026/4/27.
 //
 
 import SwiftUI
