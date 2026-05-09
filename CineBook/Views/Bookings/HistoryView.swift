@@ -21,7 +21,6 @@ struct HistoryView: View {
             }
         }
         .navigationTitle("History")
-        .background(Color(.systemGroupedBackground))
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 if !bookingStore.pastBookings.isEmpty {

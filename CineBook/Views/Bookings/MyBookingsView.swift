@@ -24,7 +24,6 @@ struct MyBookingsView: View {
             }
         }
         .navigationTitle("My Bookings")
-        .background(Color(.systemGroupedBackground))
         .alert("Cancel this booking?", isPresented: $showCancelAlert) {
             Button("Cancel Booking", role: .destructive) {
                 if let booking = bookingToCancel {
