@@ -12,6 +12,12 @@
 | 25605344 | Xuebin Wu |
 | 25942689 | Xinyu Zhou |
 
+## GitHub Repository
+
+GitHub Repository Link:
+
+https://github.com/XBW-Leo/CineBook
+
 ## Project Overview
 
 CineBook focuses on simplifying the cinema booking experience for mobile users. Instead of requiring users to move through a complicated website or visit a cinema counter, the app provides a clear native iOS flow from movie discovery to seat selection and booking management.
@@ -178,12 +184,6 @@ The app prevents invalid booking actions by:
 4. Use the Movies tab to browse films, select a date, choose a session, and make a booking.
 5. Use the My Bookings tab to view or cancel upcoming bookings.
 6. Use the History tab to view expired bookings.
-
-## GitHub Repository
-
-GitHub Repository Link:
-
-https://github.com/XBW-Leo/CineBook
 
 ## Minimum Viable Product and Iterative Design
 
