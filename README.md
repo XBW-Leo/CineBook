@@ -202,3 +202,4 @@ To solve this, the project uses `SeatStatus` to represent seat state, `SeatMapFa
 ## Current Limitations
 
 CineBook is an MVP and uses local sample data rather than a live cinema database. Payment processing, user login, real cinema APIs, online accounts, and cloud synchronisation are outside the current project scope but could be added in future versions.
+
